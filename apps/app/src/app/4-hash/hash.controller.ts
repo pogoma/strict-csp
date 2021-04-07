@@ -64,7 +64,7 @@ export class HashController {
       <div>
         ${param}
       </div>
-      <script nonce="SOME-RANDOM-STRING">
+      <script>
         console.log('inline-script')
         var s = document.createElement('script');
         s.src = '/local-script.js';
