@@ -1,11 +1,17 @@
 import { Module } from '@nestjs/common';
+import {NoCspController} from './1-no-csp/no-csp.controller';
+import {SelfCspController} from './2-self-csp/self-csp.controller';
+import {LocalScriptController} from './local-script.controller';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
 
 @Module({
   imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    NoCspController,
+    SelfCspController,
+    LocalScriptController
+  ],
+  providers: [],
 })
 export class AppModule {}
