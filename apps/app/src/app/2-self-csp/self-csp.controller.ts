@@ -44,12 +44,32 @@ export class SelfCspController {
     `
   }
 
+  // http://localhost:3333/2-self-csp/with-local-script-unsafe-inline.html?param=Hello%20World
+  // XSS: http://localhost:3333/2-self-csp/with-local-script-unsafe-inline.html?param=%3Cscript%3Ealert(0)%3C%2Fscript%3E
+  // XSS-external: http://localhost:3333/2-self-csp/with-local-script-unsafe-inline.html?param=%3Cscript%20src%3D%22https%3A%2F%2Fwww.google-analytics.com%2Fanalytics.js%22%3E%3C%2Fscript%3E
+  @Get('with-local-script-unsafe-inline.html')
+  @Header('Content-type', 'text/html')
+  @Header('Content-Security-Policy', `script-src 'unsafe-inline' 'self';`)
+  getWithScriptWithUnsafeInline(@Query('param') param: string): string {
+    //language=HTML
+    return `
+      <html>
+      <body>
+      <div>
+        ${param}
+      </div>
+      <script src="/local-script.js"></script>
+      </body>
+      </html>
+    `
+  }
+
   // http://localhost:3333/2-self-csp/with-local-script.html?param=Hello%20World
   // XSS: http://localhost:3333/2-self-csp/with-local-script.html?param=%3Cscript%3Ealert(0)%3C%2Fscript%3E
   // XSS-external: http://localhost:3333/2-self-csp/with-local-script.html?param=%3Cscript%20src%3D%22https%3A%2F%2Fwww.google-analytics.com%2Fanalytics.js%22%3E%3C%2Fscript%3E
   @Get('with-local-script.html')
   @Header('Content-type', 'text/html')
-  @Header('Content-Security-Policy', `script-src 'unsafe-inline' 'self';`)
+  @Header('Content-Security-Policy', `script-src 'self';`)
   getWithScript(@Query('param') param: string): string {
     //language=HTML
     return `
@@ -59,6 +79,26 @@ export class SelfCspController {
         ${param}
       </div>
       <script src="/local-script.js"></script>
+      </body>
+      </html>
+    `
+  }
+
+  // http://localhost:3333/2-self-csp/with-local-script-loading-another.html?param=Hello%20World
+  // XSS: http://localhost:3333/2-self-csp/with-local-script-loading-another.html?param=%3Cscript%3Ealert(0)%3C%2Fscript%3E
+  // XSS-external: http://localhost:3333/2-self-csp/with-local-script-loading-another.html?param=%3Cscript%20src%3D%22https%3A%2F%2Fwww.google-analytics.com%2Fanalytics.js%22%3E%3C%2Fscript%3E
+  @Get('with-local-script-loading-another.html')
+  @Header('Content-type', 'text/html')
+  @Header('Content-Security-Policy', `script-src 'self';`)
+  getWithLocalScriptLoadingAnother(@Query('param') param: string): string {
+    //language=HTML
+    return `
+      <html>
+      <body>
+      <div>
+        ${param}
+      </div>
+      <script src="/local-script-loading-another-scripts.js"></script>
       </body>
       </html>
     `
