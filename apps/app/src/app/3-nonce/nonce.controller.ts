@@ -75,4 +75,50 @@ export class NonceController {
     `
   }
 
+  // http://localhost:3333/3-nonce/with-script-adding-another-and-another-trusted.html?param=Hello%20World
+  @Get('with-script-adding-another-and-another-trusted.html')
+  @Header('Content-type', 'text/html')
+  @Header('Content-Security-Policy', `script-src 'nonce-SOME-RANDOM-STRING' 'strict-dynamic';`)
+  getWithScriptAddingAnotherAndAnotherTrusted(@Query('param') param: string): string {
+    //language=HTML
+    return `
+      <html>
+      <body>
+      <div>
+        ${param}
+      </div>
+      <script nonce="SOME-RANDOM-STRING">
+        console.log('inline-script')
+        var s = document.createElement('script');
+        s.src = '/local-script-loading-another-scripts.js';
+        document.head.appendChild(s);
+      </script>
+      </body>
+      </html>
+    `
+  }
+
+  // http://localhost:3333/3-nonce/with-script-adding-another-and-another-not-trusted.html?param=Hello%20World
+  @Get('with-script-adding-another-and-another-not-trusted.html')
+  @Header('Content-type', 'text/html')
+  @Header('Content-Security-Policy', `script-src 'nonce-SOME-RANDOM-STRING';`)
+  getWithScriptAddingAnotherAndAnotherNotTrusted(@Query('param') param: string): string {
+    //language=HTML
+    return `
+      <html>
+      <body>
+      <div>
+        ${param}
+      </div>
+      <script nonce="SOME-RANDOM-STRING">
+        console.log('inline-script')
+        var s = document.createElement('script');
+        s.src = '/local-script-loading-another-scripts.js';
+        document.head.appendChild(s);
+      </script>
+      </body>
+      </html>
+    `
+  }
+
 }
